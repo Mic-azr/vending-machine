@@ -78,7 +78,7 @@ class Wallet:
         fifty_dollar_bills = 0
         onehundred_dollar_bills = 0
 
-        if(remaining_funds_in_wallet == 10000): #Special case, wallet is full
+        if(remaining_funds_in_wallet >= 10000):
             remaining_funds_in_wallet -= 10000
             onehundred_dollar_bills += 1
         while(remaining_funds_in_wallet >= 5000):
