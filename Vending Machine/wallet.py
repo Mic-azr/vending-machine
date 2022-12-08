@@ -1,6 +1,6 @@
 #A Class representing a wallet holding an amount of cash, represented by an int
 #Utilizes dataclass
-#Version 1.0.1 12.7.2022
+#Version 1.0.2 12.8.2022
 #Author: Michael Cummings
 
 from dataclasses import dataclass, field
@@ -16,10 +16,15 @@ class Wallet:
         print(f"Your wallet has ${(self.wallet_funds/100.00):.2f} in cash.")
 
     def add_wallet_funds(self):
+        funds_to_add_to_wallet_as_pennies = 0
         user_input = input("Enter a dollar amount to add to your wallet:")
         try:
             funds_to_add_to_wallet = int(user_input)
-            funds_to_add_to_wallet_as_pennies = funds_to_add_to_wallet * 100
+            if(funds_to_add_to_wallet >= 0):
+                funds_to_add_to_wallet_as_pennies = funds_to_add_to_wallet * 100
+            else:
+                print("Please type a dollar amount greater than or equal to 0, without the $ symbol (Ex. '25' '2', '5.25')")
+                self.add_wallet_funds()
             
             if (funds_to_add_to_wallet_as_pennies + self.wallet_funds) <= self.max_wallet_capacity:
                 self.wallet_funds += funds_to_add_to_wallet_as_pennies
@@ -30,7 +35,11 @@ class Wallet:
         except ValueError:
             try:
                 funds_to_add_to_wallet = float(user_input)
-                funds_to_add_to_wallet_as_pennies = int(funds_to_add_to_wallet * 100)
+                if(funds_to_add_to_wallet >= 0):
+                    funds_to_add_to_wallet_as_pennies = int(funds_to_add_to_wallet * 100)
+                else:
+                    print("Please type a dollar amount greater than or equal to 0, without the $ symbol (Ex. '25' '2', '5.25')")
+                    self.add_wallet_funds()
 
                 if (funds_to_add_to_wallet_as_pennies + self.wallet_funds) <= self.max_wallet_capacity:
                     self.wallet_funds += funds_to_add_to_wallet_as_pennies
@@ -39,14 +48,19 @@ class Wallet:
                     self.add_wallet_funds()
 
             except ValueError:
-                print("Please type a dollar amount without the $ symbol (Ex. '25' '2', '5.25')")
+                print("Please type a dollar amount greater than or equal to 0, without the $ symbol (Ex. '25' '2', '5.25')")
                 self.add_wallet_funds()
 
     def remove_wallet_funds(self):
-        user_input = input("Enter a dollar amount to add to your wallet:")
+        funds_to_remove_from_wallet_as_pennies = 0
+        user_input = input("Enter a dollar amount to remove from your wallet:")
         try:
             funds_to_remove_from_wallet = int(user_input)
-            funds_to_remove_from_wallet_as_pennies = funds_to_remove_from_wallet * 100
+            if(funds_to_remove_from_wallet >= 0):
+                funds_to_remove_from_wallet_as_pennies = funds_to_remove_from_wallet * 100
+            else:
+                print("Please type a dollar amount greater than or equal to 0, without the $ symbol (Ex. '25' '2', '5.25')")
+                self.remove_wallet_funds()
 
             if funds_to_remove_from_wallet_as_pennies <= self.wallet_funds:
                 self.wallet_funds -= funds_to_remove_from_wallet_as_pennies
@@ -57,7 +71,11 @@ class Wallet:
         except ValueError:
             try:
                 funds_to_remove_from_wallet = float(user_input)
-                funds_to_remove_from_wallet_as_pennies = int(funds_to_remove_from_wallet * 100)
+                if(funds_to_remove_from_wallet >= 0):
+                    funds_to_remove_from_wallet_as_pennies = int(funds_to_remove_from_wallet * 100)
+                else:
+                    print("Please type a dollar amount greater than or equal to 0, without the $ symbol (Ex. '25' '2', '5.25')")
+                    self.remove_wallet_funds()
                 
                 if funds_to_remove_from_wallet_as_pennies <= self.wallet_funds:
                     self.wallet_funds -= funds_to_remove_from_wallet_as_pennies
@@ -66,11 +84,15 @@ class Wallet:
                     self.remove_wallet_funds()
 
             except ValueError:
-                print("Please type a dollar amount without the $ symbol (Ex. '25' '2', '5.25')")
+                print("Please type a dollar amount greater than or equal to 0, without the $ symbol (Ex. '25' '2', '5.25')")
                 self.remove_wallet_funds()
 
     def convert_to_bills(self): #Method to represent the funds in the wallet as a stack of bills of different denominations
         remaining_funds_in_wallet = self.wallet_funds
+        penny_coins = 0
+        nickel_coins = 0
+        dime_coins = 0
+        quarter_coins = 0
         one_dollar_bills = 0
         five_dollar_bills = 0
         ten_dollar_bills = 0
@@ -78,6 +100,8 @@ class Wallet:
         fifty_dollar_bills = 0
         onehundred_dollar_bills = 0
 
+        if(remaining_funds_in_wallet == 0):
+            print("Your wallet is empty!")
         if(remaining_funds_in_wallet >= 10000):
             remaining_funds_in_wallet -= 10000
             onehundred_dollar_bills += 1
@@ -96,6 +120,18 @@ class Wallet:
         while(remaining_funds_in_wallet >= 100):
             remaining_funds_in_wallet -= 100
             one_dollar_bills += 1
+        while(remaining_funds_in_wallet >= 25):
+            remaining_funds_in_wallet -= 25
+            quarter_coins += 1
+        while(remaining_funds_in_wallet >= 10):
+            remaining_funds_in_wallet -= 10
+            dime_coins += 1
+        while(remaining_funds_in_wallet >= 5):
+            remaining_funds_in_wallet -= 5
+            nickel_coins += 1
+        while(remaining_funds_in_wallet >= 1):
+            remaining_funds_in_wallet -= 1
+            penny_coins += 1
 
         print("The money in your wallet can be converted to: \n")
         if(onehundred_dollar_bills > 0):
@@ -108,3 +144,12 @@ class Wallet:
             print(f"{five_dollar_bills} x $5\n")
         if(one_dollar_bills > 0):
             print(f"{one_dollar_bills} x $1\n")
+        if(quarter_coins > 0):
+            print(f"{quarter_coins} * 25¢\n")
+        if(dime_coins > 0):
+            print(f"{dime_coins} * 10¢\n")
+        if(nickel_coins > 0):
+            print(f"{nickel_coins} * 5¢\n")
+        if(penny_coins > 0):
+            print(f"{penny_coins} * 1¢\n")
+            
